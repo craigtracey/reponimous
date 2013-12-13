@@ -14,6 +14,7 @@
 # limitations under the License.import argparse
 #
 
+import argparse
 import datetime
 import errno
 import git

@@ -1,0 +1,8 @@
+---
+- git: "https://github.com/blueboxgroup/ursula.git"
+  ref: "003654c64836ace6350565b25dccf1d653c48ab3"
+
+- git: "https://github.com/lorin/openstack-ansible-modules.git"
+  files:
+    - src: "*_manage"
+      dst: "library/"

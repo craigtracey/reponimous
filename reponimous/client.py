@@ -107,6 +107,11 @@ def _link_overlay_files(srcdir, src, dstdir, dst):
                 os.makedirs(filedstdir)
 
         else:
+            if os.path.isdir(os.path.join(dstdir, dst)) or dst.endswith('/'):
+                linkdstdir = os.path.join(dstdir, dst, os.path.basename(filename))
+                _force_symlink(filename, linkdstdir)
+                continue
+
             if not dst:
                 linkdstdir = os.path.join(dstdir,
                                           os.path.dirname(filename)[len(srcdir)+1:])
@@ -205,7 +210,6 @@ def install(args):
         print "ERROR: Error parsing reponimous file '%s': %s" % (config, e)
 
     _create_merged_repository(config, args.archive, args.path)
-
 
 def main():
     parser = argparse.ArgumentParser()

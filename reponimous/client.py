@@ -133,7 +133,7 @@ def _create_timestamp_name(fmt='%Y-%m-%dT%H:%M:%S%z'):
 def _archive(src, name=None, dst=None):
     archivename = "reponimous-%s.tgz" % _create_timestamp_name()
     if name:
-        archivename = name
+        archivename = "%s.tgz" % name
 
     if not dst:
         dst = os.getcwd()
@@ -150,7 +150,7 @@ def _archive(src, name=None, dst=None):
     return archivepath
 
 
-def _create_merged_repository(config, archive=False, path=None):
+def _create_merged_repository(config):
 
     tempdir = tempfile.mkdtemp()
     for item in config:
@@ -169,22 +169,7 @@ def _create_merged_repository(config, archive=False, path=None):
 
                 _link_overlay_files(repodirname, src, tempdir, dst)
 
-    if archive:
-        archivepath = _archive(tempdir)
-        print "Archived reponimous to %s" % archivepath
-    elif path:
-        pathparent = os.path.dirname(path)
-        if not pathparent =='' and not os.path.exists(pathparent):
-            os.makedirs(os.path.dirname(pathparent))
-
-        if not os.path.exists(path):
-            shutil.move(tempdir, path)
-            print "Reponimous path: %s" % path
-        else:
-            print >> sys.stderr, "--path directory already exists"
-            sys.exit(-1)
-
-    shutil.rmtree(tempdir, ignore_errors=True)
+    return tempdir
 
 
 def _parse_reponimous_file(filename):
@@ -193,33 +178,58 @@ def _parse_reponimous_file(filename):
 
 
 def install(args):
-    filename = args.config
-
-    if not os.path.isfile(filename):
-        print >> sys.stderr, "Reponimous file not found"
-        sys.exit(-1)
-
-    if not args.archive and not args.path:
-        print >> sys.stderr, "You must provide either --path or --archive"
-        sys.exit(-1)
-
     config = None
+    ret = 0
     try:
-        config = _parse_reponimous_file(filename)
+        config = _parse_reponimous_file(args.config)
     except Exception as e:
         print "ERROR: Error parsing reponimous file '%s': %s" % (config, e)
 
-    _create_merged_repository(config, args.archive, args.path)
+    merged_repo = _create_merged_repository(config)
+    parentpath = os.path.dirname(args.path)
+    if not os.path.exists(parentpath):
+        os.makedirs(parentpath)
+
+    if not os.path.exists(args.path):
+        shutil.move(merged_repo, args.path)
+        print "Reponimous path: %s" % args.path
+    else:
+        print >> sys.stderr, "--path directory already exists"
+        ret = -1
+    shutil.rmtree(merged_repo, ignore_errors=True)
+
+    if not ret == 0:
+        sys.exit(ret)
+
+
+def archive(args):
+
+    config = None
+    try:
+        config = _parse_reponimous_file(args.config)
+    except Exception as e:
+        print "ERROR: Error parsing reponimous file '%s': %s" % (config, e)
+
+    merged_repo = _create_merged_repository(config)
+    archivepath = _archive(merged_repo, args.name, args.path)
+    print "Archived reponimous to %s" % archivepath
+    shutil.rmtree(merged_repo, ignore_errors=True)
+
 
 def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
 
+    parser.add_argument('--config', type=str, default='Reponimous')
+
     parser_install = subparsers.add_parser('install')
-    parser_install.add_argument('--config', type=str, default='Reponimous')
     parser_install.add_argument('--path', type=str)
-    parser_install.add_argument('--archive', type=str)
     parser_install.set_defaults(func=install)
+
+    parser_archive = subparsers.add_parser('archive')
+    parser_archive.add_argument('--path', type=str, default=os.getcwd())
+    parser_archive.add_argument('--name', type=str, default="reponimous")
+    parser_archive.set_defaults(func=archive)
 
     args = parser.parse_args()
     args.func(args)

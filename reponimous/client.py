@@ -183,6 +183,12 @@ def _parse_reponimous_file(filename):
     return yaml.load(stream)
 
 
+def _make_path_absolute(path):
+    if os.path.isabs(path):
+        return path
+    return os.path.join(os.getcwd(), path)
+
+
 def install(args):
     config = None
     ret = 0
@@ -192,16 +198,17 @@ def install(args):
         print sys.stderr, \
             "Error parsing reponimous file '%s': %s" % (args.config, e)
 
+    path = _make_path_absolute(args.path)
     merged_repo = _create_merged_repository(config)
-    parentpath = os.path.dirname(args.path)
+    parentpath = os.path.dirname(path)
     if not os.path.exists(parentpath):
         os.makedirs(parentpath)
 
-    if not os.path.exists(args.path):
-        shutil.move(merged_repo, args.path)
-        print "Reponimous path: %s" % args.path
+    if not os.path.exists(path):
+        shutil.move(merged_repo, path)
+        print "Reponimous path: %s" % path
     else:
-        print >> sys.stderr, "--path directory already exists"
+        print >> sys.stderr, "'%s' directory already exists" % path
         ret = -1
     shutil.rmtree(merged_repo, ignore_errors=True)
 
@@ -218,8 +225,9 @@ def archive(args):
         print sys.stderr, \
             "Error parsing reponimous file '%s': %s" % (args.config, e)
 
+    path = _make_path_absolute(args.path)
     merged_repo = _create_merged_repository(config)
-    archivepath = _archive(merged_repo, args.name, args.path)
+    archivepath = _archive(merged_repo, args.name, path)
     print "Archived reponimous to %s" % archivepath
     shutil.rmtree(merged_repo, ignore_errors=True)
 

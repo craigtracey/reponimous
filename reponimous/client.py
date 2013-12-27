@@ -40,14 +40,12 @@ def _fetch_git_repo(repo, ref):
     repodirname = os.path.join(reponimousdir, "%s-%s-%s" %
         (parsedrepo.owner, parsedrepo.repo, ref))
 
-    gitrepo = None
     if not os.path.isdir(repodirname):
-        gitrepo = git.Git().clone(repo, repodirname)
+        git.Git().clone(repo, repodirname)
 
     gitrepo = git.Repo(repodirname)
-    origin = gitrepo.remotes.origin
-
     gitrepo.git.checkout(ref)
+    gitrepo.git.pull()
     return repodirname
 
 

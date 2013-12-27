@@ -18,6 +18,7 @@ import argparse
 import datetime
 import errno
 import git
+import giturlparse
 import glob
 import os
 import re
@@ -35,10 +36,9 @@ def _fetch_git_repo(repo, ref):
     if not os.path.isdir(reponimousdir):
         os.makedirs(reponimousdir)
 
-    reponame = os.path.basename(repo)
-    reponame = re.sub(".git$", '', reponame)
-
-    repodirname = os.path.join(reponimousdir, "%s-%s" % (reponame, ref))
+    parsedrepo = giturlparse.parse(repo)
+    repodirname = os.path.join(reponimousdir, "%s-%s-%s" %
+        (parsedrepo.owner, parsedrepo.repo, ref))
 
     gitrepo = None
     if not os.path.isdir(repodirname):
@@ -189,7 +189,7 @@ def install(args):
     try:
         config = _parse_reponimous_file(args.config)
     except Exception as e:
-        print sys.stderr,
+        print sys.stderr, \
             "Error parsing reponimous file '%s': %s" % (args.config, e)
 
     merged_repo = _create_merged_repository(config)
@@ -215,7 +215,7 @@ def archive(args):
     try:
         config = _parse_reponimous_file(args.config)
     except Exception as e:
-        print sys.stderr,
+        print sys.stderr, \
             "Error parsing reponimous file '%s': %s" % (args.config, e)
 
     merged_repo = _create_merged_repository(config)

@@ -52,6 +52,7 @@ setup(
     },
     install_requires = [
         'GitPython==0.3.2.RC1',
-        'PyYAML'
+        'PyYAML',
+        'giturlparse.py'
     ]
 )

@@ -189,7 +189,8 @@ def install(args):
     try:
         config = _parse_reponimous_file(args.config)
     except Exception as e:
-        print "ERROR: Error parsing reponimous file '%s': %s" % (config, e)
+        print sys.stderr,
+            "Error parsing reponimous file '%s': %s" % (args.config, e)
 
     merged_repo = _create_merged_repository(config)
     parentpath = os.path.dirname(args.path)
@@ -214,7 +215,8 @@ def archive(args):
     try:
         config = _parse_reponimous_file(args.config)
     except Exception as e:
-        print "ERROR: Error parsing reponimous file '%s': %s" % (config, e)
+        print sys.stderr,
+            "Error parsing reponimous file '%s': %s" % (args.config, e)
 
     merged_repo = _create_merged_repository(config)
     archivepath = _archive(merged_repo, args.name, args.path)

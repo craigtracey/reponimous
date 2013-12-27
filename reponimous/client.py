@@ -76,7 +76,13 @@ def _symlink_all_content(src, dst):
 
 
 def _link_overlay_files(srcdir, src, dstdir, dst):
-    srcfiles = glob.glob(os.path.join(srcdir, src))
+
+    if not isinstance(src, list):
+        src = [src]
+
+    srcfiles = []
+    for s in src:
+        srcfiles += glob.glob(os.path.join(srcdir, s))
 
     symdst = None
     for filename in srcfiles:

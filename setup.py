@@ -53,6 +53,9 @@ setup(
     install_requires = [
         'GitPython==0.3.2.RC1',
         'PyYAML',
-        'giturlparse.py'
+        'giturlparse.py>=0.0.5'
+    ],
+    dependency_links = [
+        'http://github.com/craigtracey/giturlparse.py/tarball/master#egg=giturlparse.py-0.0.5',
     ]
 )

@@ -36,7 +36,7 @@ def _fetch_git_repo(repo, ref):
     if not os.path.isdir(reponimousdir):
         os.makedirs(reponimousdir)
 
-    parsedrepo = giturlparse.parse(repo)
+    parsedrepo = giturlparse.parse(repo, False)
     repodirname = os.path.join(reponimousdir, "%s-%s-%s" %
         (parsedrepo.owner, parsedrepo.repo, ref))
 

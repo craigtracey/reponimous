@@ -36,9 +36,10 @@ def _fetch_git_repo(repo, ref):
     if not os.path.isdir(reponimousdir):
         os.makedirs(reponimousdir)
 
+    cleanref = re.sub('/', '-', ref)
     parsedrepo = giturlparse.parse(repo, False)
     repodirname = os.path.join(reponimousdir, "%s-%s-%s" %
-        (parsedrepo.owner, parsedrepo.repo, ref))
+        (parsedrepo.owner, parsedrepo.repo, cleanref))
 
     if not os.path.isdir(repodirname):
         git.Git().clone(repo, repodirname)

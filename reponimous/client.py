@@ -45,7 +45,10 @@ def _fetch_git_repo(repo, ref):
 
     gitrepo = git.Repo(repodirname)
     gitrepo.git.checkout(ref)
-    gitrepo.git.pull()
+
+    if not gitrepo.head.is_detached:
+        gitrepo.git.pull()
+
     return repodirname
 
 

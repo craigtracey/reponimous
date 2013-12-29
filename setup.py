@@ -55,7 +55,4 @@ setup(
         'PyYAML',
         'giturlparse.py>=0.0.5'
     ],
-    dependency_links = [
-        'http://github.com/craigtracey/giturlparse.py/tarball/master#egg=giturlparse.py-0.0.5',
-    ]
 )

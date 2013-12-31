@@ -45,12 +45,12 @@ setup(
         'Environment :: No Input/Output (Daemon)',
     ],
     py_modules=[],
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'reponimous = reponimous.client:main'
         ]
     },
-    install_requires = [
+    install_requires=[
         'GitPython==0.3.2.RC1',
         'PyYAML',
         'giturlparse.py>=0.0.5'

@@ -25,11 +25,11 @@ except ImportError:
     from setuptools import setup, find_packages
     from setuptools.command.sdist import sdist
 
-VERSION=1.0
+version_string = '0.0.1'
 
 setup(
     name='reponimous',
-    version=VERSION,
+    version=version_string,
     description='reponimous: a git overlay tool',
     license='Apache License (2.0)',
     author='Craig Tracey',

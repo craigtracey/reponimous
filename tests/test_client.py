@@ -1,23 +1,24 @@
-#!/usr/bin/python
-# Copyright (c) 2013 Blue Box Group, Inc.
-# Copyright (c) 2013 Craig Tracey <craigtracey@gmail.com>
 # Copyright (c) 2015 John Dewey <john@dewey.ws>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License.import argparse
+#
 
-import setuptools
+import testtools
 
-setuptools.setup(packages=setuptools.find_packages(),
-                 pbr=True,
-                 setup_requires=['pbr'])
+import reponimous.client as client
+
+
+class TestClient(testtools.TestCase):
+    def setUp(self):
+        super(TestClient, self).setUp()

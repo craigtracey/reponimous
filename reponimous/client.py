@@ -17,8 +17,6 @@
 import argparse
 import datetime
 import errno
-import git
-import giturlparse
 import glob
 import os
 import re
@@ -26,11 +24,13 @@ import shutil
 import sys
 import tarfile
 import tempfile
+
+import git
+import giturlparse
 import yaml
 
 
 def _fetch_git_repo(repo, ref):
-
     home = os.path.expanduser("~")
     reponimousdir = os.path.join(home, ".reponimous")
     if not os.path.isdir(reponimousdir):
@@ -39,7 +39,7 @@ def _fetch_git_repo(repo, ref):
     cleanref = re.sub('/', '-', ref)
     parsedrepo = giturlparse.parse(repo, False)
     repodirname = os.path.join(reponimousdir, "%s-%s-%s" %
-        (parsedrepo.owner, parsedrepo.repo, cleanref))
+                               (parsedrepo.owner, parsedrepo.repo, cleanref))
 
     if not os.path.isdir(repodirname):
         git.Git().clone(repo, repodirname)
@@ -64,8 +64,8 @@ def _force_symlink(src, dst):
 
 def _symlink_all_content(src, dst):
     for dirname, subdirs, filenames in os.walk(src):
-        srcbase = dirname[len(src)+1:]
-        dstbase = os.path.join(dst, dirname[len(src)+1:])
+        srcbase = dirname[len(src) + 1:]
+        dstbase = os.path.join(dst, dirname[len(src) + 1:])
         for subdir in subdirs:
             if subdir.startswith('.git'):
                 continue
@@ -73,12 +73,12 @@ def _symlink_all_content(src, dst):
         for filename in filenames:
             if filename.startswith('.git'):
                 continue
-            os.symlink(os.path.join(src, srcbase, filename),
-                       os.path.join(dstbase, dirname[len(src)+1:1], filename))
+            os.symlink(
+                os.path.join(src, srcbase, filename),
+                os.path.join(dstbase, dirname[len(src) + 1:1], filename))
 
 
 def _link_overlay_files(srcdir, src, dstdir, dst):
-
     if not isinstance(src, list):
         src = [src]
 
@@ -100,8 +100,8 @@ def _link_overlay_files(srcdir, src, dstdir, dst):
             filedstdir = None
             filedstname = None
             if not dst:
-                filedstdir = os.path.join(dstdir,
-                                          os.path.dirname(filename)[len(srcdir)+1:])
+                filedstdir = os.path.join(
+                    dstdir, os.path.dirname(filename)[len(srcdir) + 1:])
                 filedstname = os.path.basename(filename)
             elif os.path.isdir(os.path.join(dstdir, dst)) or dst.endswith('/'):
                 filedstdir = os.path.join(dstdir, dst)
@@ -116,13 +116,14 @@ def _link_overlay_files(srcdir, src, dstdir, dst):
 
         else:
             if os.path.isdir(os.path.join(dstdir, dst)) or dst.endswith('/'):
-                linkdstdir = os.path.join(dstdir, dst, os.path.basename(filename))
+                linkdstdir = os.path.join(dstdir, dst,
+                                          os.path.basename(filename))
                 _force_symlink(filename, linkdstdir)
                 continue
 
             if not dst:
-                linkdstdir = os.path.join(dstdir,
-                                          os.path.dirname(filename)[len(srcdir)+1:])
+                linkdstdir = os.path.join(
+                    dstdir, os.path.dirname(filename)[len(srcdir) + 1:])
             else:
                 linkdstdir = os.path.join(dstdir, dst)
 
@@ -159,7 +160,6 @@ def _archive(src, name=None, dst=None):
 
 
 def _create_merged_repository(config):
-
     tempdir = tempfile.mkdtemp()
     for item in config:
         repo = item.get('git')
@@ -219,7 +219,6 @@ def install(args):
 
 
 def archive(args):
-
     config = None
     try:
         config = _parse_reponimous_file(args.config)
@@ -251,6 +250,7 @@ def main():
 
     args = parser.parse_args()
     args.func(args)
+
 
 if __name__ == '__main__':
     main()
